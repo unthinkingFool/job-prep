@@ -14,6 +14,24 @@ authRouter.post("/register",registerUserController);
 const {loginUserController}=require("../controllers/auth.controller")
 authRouter.post("/login",loginUserController);
 
+/**
+ * route :GET /api/auth/logout
+ */
+const {logoutUserController}=require("../controllers/auth.controller")
+authRouter.get("/logout",logoutUserController);
+
+/**
+ * route : GET /api/auth/get-me
+ */
+const {authMiddleware} =require("../middlewares/auth.middleware")
+const {getmeUserController}=require("../controllers/auth.controller")
+authRouter.get("/get-me",authMiddleware,getmeUserController);
+
+/**
+ * 
+ */
+
+
 
 module.exports=authRouter;
  

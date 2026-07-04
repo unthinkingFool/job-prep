@@ -132,9 +132,72 @@ const loginUserController = async (req, res) => {
   }
 };
 
+const logoutUserController = async (req, res) => {
+  try {
+    const token = req.cookies.token;
 
+    if (!token) {
+      return res.status(400).json({
+        message: "User is already logged out",
+      });
+    }
+
+    // Add token to blacklist
+    await pool.query(
+      "INSERT INTO blacklisted_tokens (token) VALUES ($1)",
+      [token]
+    );
+
+    // Clear the cookie
+    res.clearCookie("token");
+
+    return res.status(200).json({
+      message: "Logged out successfully",
+    });
+
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+};
+
+const getmeUserController = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const result = await pool.query(
+      `SELECT id, username, email
+       FROM users
+       WHERE id = $1`,
+      [userId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      message: "User fetched successfully",
+      user: result.rows[0],
+    });
+
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+};
 
 module.exports = {
   registerUserController,
   loginUserController,
+  logoutUserController,
+  getmeUserController,
 };
