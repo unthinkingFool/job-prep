@@ -4,11 +4,11 @@ import { router } from "./app.routes";
 import { AuthProvider } from "./features/auth/auth.context";
 
 const App = () => {
-  return 
+  return (
     <AuthProvider>
         <RouterProvider router={router} />;
     </AuthProvider>
-
+  )
 };
 
 export default App;

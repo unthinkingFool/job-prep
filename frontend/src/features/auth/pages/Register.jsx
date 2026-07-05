@@ -1,9 +1,45 @@
 import React from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useState } from "react";
+import { useAuth } from "../hooks/useAuth";
 
 const Register = () => {
 
   const navigate=useNavigate();
+
+  const [username, setusername] = useState("")
+  const [email, setemail] = useState("")
+  const [password, setpassword] = useState("")
+
+  const {loading,handleRegister}=useAuth()
+
+  const handleSubmit= async (e)=>{
+    e.preventDefault()
+    await handleRegister({username, email, password})
+    navigate("/")
+  }
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-slate-950 flex items-center justify-center relative overflow-hidden">
+        {/* Background Glow */}
+        <div className="absolute w-96 h-96 bg-blue-600/20 rounded-full blur-3xl top-20 left-20"></div>
+        <div className="absolute w-80 h-80 bg-violet-600/20 rounded-full blur-3xl bottom-20 right-20"></div>
+
+        {/* Loading Card */}
+        <div className="relative z-10 flex flex-col items-center bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl px-12 py-10 shadow-2xl">
+          {/* Spinner */}
+          <div className="w-14 h-14 border-4 border-slate-600 border-t-blue-500 rounded-full animate-spin"></div>
+
+          <h2 className="mt-6 text-2xl font-semibold text-white">Loading...</h2>
+
+          <p className="mt-2 text-slate-400 text-center">
+            Preparing your JobPrep AI experience.
+          </p>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-950 flex">
@@ -56,7 +92,7 @@ const Register = () => {
 
           </div>
 
-          <form className="mt-10 space-y-6">
+          <form autoComplete="off" className="mt-10 space-y-6" onSubmit={handleSubmit}>
 
             <div>
               <label className="text-sm font-semibold text-slate-700">
@@ -64,6 +100,7 @@ const Register = () => {
               </label>
 
               <input
+                onChange={(e)=>{setusername(e.target.value)}}
                 type="text"
                 placeholder="Enter your username"
                 className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
@@ -76,6 +113,7 @@ const Register = () => {
               </label>
 
               <input
+                onChange={(e)=>{setemail(e.target.value)}}
                 type="email"
                 placeholder="Enter your email"
                 className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
@@ -88,6 +126,7 @@ const Register = () => {
               </label>
 
               <input
+                onChange={(e)=>{setpassword(e.target.value)}}
                 type="password"
                 placeholder="Create a password"
                 className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
