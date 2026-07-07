@@ -48,7 +48,12 @@ const registerUserController = async (req, res) => {
     }
     );
 
-    res.cookie("token",token)
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false,          // localhost only
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
 
     res.status(201).json({
       message: "User registered successfully",
@@ -112,7 +117,13 @@ const loginUserController = async (req, res) => {
     );
 
     // Store JWT in cookie
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false,          // localhost only
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
 
     // Send response
     res.status(200).json({
