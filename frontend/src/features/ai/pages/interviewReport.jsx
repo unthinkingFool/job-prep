@@ -27,11 +27,6 @@ function ScoreSeal({ score }) {
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (score / 100) * circumference;
 
-  useEffect(() => {
-    if(interviewId) {
-      fetchReportID(interviewId);
-    }
-  }, [interviewId]);
   return (
     <div className="seal-wrap">
       <svg width="150" height="150" viewBox="0 0 150 150">
@@ -62,7 +57,13 @@ export default function InterviewReport() {
   const [openSection, setOpenSection] = useState("strengths");
 
   const { interviewReport: report , fetchReportID } = useInterview();
-  const interviewId = useParams();
+  const { id: interviewId } = useParams();
+
+  useEffect(() => {
+    if (interviewId) {
+      fetchReportID(interviewId);
+    }
+  }, [interviewId, fetchReportID]);
 
   const sectionIcons = {
     strengths: ShieldCheck,
@@ -234,7 +235,7 @@ export default function InterviewReport() {
   };
 
   return (
-    <main className="dossier-shell">
+    <main className="dossier-shell margin-bottom-20">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap');
 
@@ -287,6 +288,68 @@ export default function InterviewReport() {
           border-radius: 18px;
         }
 
+        /* Below the 2-column breakpoint the sidebar and content stack normally
+           and the whole page scrolls together — no fixed-height tricks here,
+           so nothing can get clipped. */
+        .content-panel {
+          min-height: 420px;
+        }
+
+        .margin-bottom-20 {
+          margin-bottom: 5rem;
+        }
+
+        /* At the breakpoint where the sidebar sits beside the content (same
+           breakpoint as lg:grid-cols on section-grid), pin the header and
+           sidebar in place and make only the content panel scroll. */
+        @media (min-width: 1024px) {
+          .dossier-shell {
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+          }
+
+          .doc-header {
+            flex-shrink: 0;
+          }
+
+          .report-page-wrap {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+          }
+
+          .report-section {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+          }
+
+          .score-card {
+            flex-shrink: 0;
+          }
+
+          .section-grid {
+            flex: 1;
+            min-height: 0;
+            display: grid;
+            grid-template-rows: minmax(0, 1fr);
+          }
+
+          .section-grid > aside {
+            overflow-y: auto;
+          }
+
+          .content-panel {
+            height: 100%;
+            overflow-y: auto;
+          }
+        }
+
         .section-toggle {
           width: 100%;
           display: flex;
@@ -334,9 +397,6 @@ export default function InterviewReport() {
         .section-nav-button.active {
           border-color: var(--gold);
           background: rgba(201,162,75,0.1);
-        }
-        .content-panel {
-          min-height: 420px;
         }
 
         .card-tag {
@@ -412,9 +472,9 @@ export default function InterviewReport() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-10 lg:py-16">
-        <section className="space-y-4">
-          <div className="score-card p-8 md:p-10">
+      <div className="report-page-wrap max-w-7xl mx-auto px-6 pt-4 pb-10 lg:pt-6 lg:pb-16 w-full">
+        <section className="report-section space-y-4">
+          <div className="score-card p-8 md:p-10" style={{ flexShrink: 0 }}>
             <div className="flex flex-col md:flex-row items-start md:items-center gap-8">
               <ScoreSeal score={report.score} />
               <div className="max-w-2xl">
@@ -429,8 +489,8 @@ export default function InterviewReport() {
             </div>
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
-            <aside className="section-card p-4 lg:sticky lg:top-6 self-start">
+          <div className="section-grid grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
+            <aside className="section-card p-4 self-start">
               <div className="mono text-[11px] uppercase" style={{ color: "var(--text-muted)" }}>
                 Sections
               </div>

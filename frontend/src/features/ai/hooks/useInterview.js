@@ -1,11 +1,13 @@
 import {generateInterviewReport,getInterviewReport,getAllInterviewReports} from "../services/interview.api";
-import {useContext} from "react";
+import {useContext , useEffect } from "react";
 import {AIContext} from "../ai.context";
-
+import {useNavigate , useParams } from "react-router-dom";
 
 export const useInterview = () => {
   
     const context = useContext(AIContext);
+    const {interviewID} = useParams();
+
     if (!context) {
         throw new Error("useInterview must be used within an AIProvider");
     }
@@ -56,6 +58,18 @@ export const useInterview = () => {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        if (interviewID) {
+            fetchReportID(interviewID);
+        }else{
+            getAllInterviewReports().then((allReports) => {
+                setReports(allReports);
+            }).catch((error) => {
+                console.error("Error fetching all interview reports:", error);
+            });
+        }
+    }, [interviewID]);
 
     return {
         interviewReport,
