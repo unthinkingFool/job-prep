@@ -1,8 +1,22 @@
+require("dotenv").config();
+
 const Groq = require("groq-sdk");
 
-const groq = new Groq({
-  apiKey: process.env.GROQ_API_KEY,
-});
+let groq = null;
+
+function getGroqClient() {
+  const apiKey = process.env.GROQ_API_KEY;
+
+  if (!apiKey) {
+    throw new Error("GROQ_API_KEY is missing. Set it in your environment or .env file before running the app.");
+  }
+
+  if (!groq) {
+    groq = new Groq({ apiKey });
+  }
+
+  return groq;
+}
 
 const SYSTEM_PROMPT = `
 
@@ -23,7 +37,9 @@ Rules:
 `;
 
 async function askLLM(prompt) {
-  const completion = await groq.chat.completions.create({
+  const client = getGroqClient();
+
+  const completion = await client.chat.completions.create({
     model: "llama-3.3-70b-versatile",
     messages: [
       {
@@ -126,6 +142,7 @@ Return ONLY valid JSON.
 Schema:
 
 {
+  "TItle": suitable title for the report,
   "matchScore": number,
 
   "strengths":[

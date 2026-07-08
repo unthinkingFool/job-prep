@@ -57,6 +57,7 @@ const generateInterviewReport = async (req, res) => {
     // Step 3: Save to PostgreSQL
     const savedReport = await saveInterviewReport({
       userId: req.user.id,
+      title: analysis.title ?? analysis.TItle ?? "Interview Report",
       resumeText,
       selfDescription,
       jobDescription,
@@ -83,6 +84,11 @@ const generateInterviewReport = async (req, res) => {
   }
 };
 
+
+
+
+
 module.exports = {
   generateInterviewReport,
+  
 };

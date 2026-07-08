@@ -3,10 +3,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useState } from "react";
 
-
 const Login = () => {
   const { loading, handleLogin } = useAuth();
-  
 
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
@@ -15,26 +13,99 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-     await handleLogin({ email, password });
-    navigate("/")
+    await handleLogin({ email, password });
+    navigate("/");
   };
+
+  const theme = (
+    <style>{`
+      @import url('https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap');
+
+      .dossier-shell {
+        --ink: #141b22;
+        --panel: #1b2530;
+        --panel-2: #263140;
+        --hairline: #3a4552;
+        --parchment: #ece5d3;
+        --text: #e7e2d6;
+        --text-muted: #8c93a0;
+        --red: #b23a2e;
+        --gold: #c9a24b;
+        --teal: #4f7a72;
+        min-height: 100vh;
+        background: var(--ink);
+        background-image:
+          radial-gradient(ellipse 900px 600px at 15% -5%, rgba(201,162,75,0.07), transparent 60%),
+          radial-gradient(ellipse 900px 700px at 100% 10%, rgba(79,122,114,0.08), transparent 60%);
+        color: var(--text);
+        font-family: 'Inter', sans-serif;
+      }
+      .dossier-shell h1, .dossier-shell h2, .dossier-shell h3, .display { font-family: 'Zilla Slab', serif; }
+      .mono { font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.06em; }
+
+      .stamp-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        border: 1.5px solid var(--red);
+        color: var(--red);
+        padding: 0.35rem 0.9rem;
+        border-radius: 2px;
+        transform: rotate(-2deg);
+      }
+
+      .file-body {
+        background: var(--panel-2);
+        border: 1px solid var(--hairline);
+        border-radius: 14px;
+      }
+
+      .field {
+        background: var(--ink);
+        border: 1px solid var(--hairline);
+        border-radius: 12px;
+        color: var(--text);
+      }
+      .field:focus { outline: none; border-color: var(--gold); }
+      .field::placeholder { color: var(--text-muted); }
+
+      .btn-primary {
+        background: var(--red);
+        color: var(--parchment);
+        font-family: 'IBM Plex Mono', monospace;
+        letter-spacing: 0.08em;
+        transition: filter 0.2s ease;
+      }
+      .btn-primary:hover { filter: brightness(1.12); }
+
+      .checklist-item { border-bottom: 1px solid var(--hairline); }
+      .checklist-item:last-child { border-bottom: none; }
+
+      .spinner {
+        border: 4px solid var(--panel-2);
+        border-top-color: var(--gold);
+        border-radius: 999px;
+        animation: spin 0.9s linear infinite;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+
+      @media (prefers-reduced-motion: reduce) {
+        .spinner { animation: none; }
+      }
+    `}</style>
+  );
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-slate-950 flex items-center justify-center relative overflow-hidden">
-        {/* Background Glow */}
-        <div className="absolute w-96 h-96 bg-blue-600/20 rounded-full blur-3xl top-20 left-20"></div>
-        <div className="absolute w-80 h-80 bg-violet-600/20 rounded-full blur-3xl bottom-20 right-20"></div>
-
-        {/* Loading Card */}
-        <div className="relative z-10 flex flex-col items-center bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl px-12 py-10 shadow-2xl">
-          {/* Spinner */}
-          <div className="w-14 h-14 border-4 border-slate-600 border-t-blue-500 rounded-full animate-spin"></div>
-
-          <h2 className="mt-6 text-2xl font-semibold text-white">Loading...</h2>
-
-          <p className="mt-2 text-slate-400 text-center">
-            Preparing your JobPrep AI experience.
+      <main className="dossier-shell flex items-center justify-center">
+        {theme}
+        <div className="file-body flex flex-col items-center px-12 py-10">
+          <div className="spinner w-14 h-14" />
+          <h2 className="display mt-6 text-2xl font-semibold" style={{ color: "var(--parchment)" }}>
+            Retrieving your file…
+          </h2>
+          <p className="mt-2 text-sm" style={{ color: "var(--text-muted)" }}>
+            Preparing your JobPrep AI dossier.
           </p>
         </div>
       </main>
@@ -42,90 +113,87 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 flex">
+    <div className="dossier-shell flex">
+      {theme}
+
       {/* Left Section */}
-      <div className="hidden lg:flex w-1/2 flex-col justify-center px-20 text-white relative overflow-hidden">
-        <div className="absolute w-96 h-96 bg-blue-600/20 rounded-full blur-3xl top-20 left-10"></div>
-        <div className="absolute w-80 h-80 bg-violet-600/20 rounded-full blur-3xl bottom-10 right-10"></div>
+      <div className="hidden lg:flex w-1/2 flex-col justify-center px-20 relative">
+        <div className="max-w-lg">
+          <span className="stamp-badge mono text-xs uppercase">JobPrep AI</span>
 
-        <div className="relative z-10 max-w-lg">
-          <p className="text-blue-400 font-semibold tracking-widest uppercase">
-            JobPrep AI
-          </p>
-
-          <h1 className="text-5xl font-bold leading-tight mt-5">
+          <h1 className="display mt-6 text-5xl font-semibold leading-[1.05]" style={{ color: "var(--parchment)" }}>
             Land your dream job
-            <span className="block bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent">
-              with AI.
-            </span>
+            <span className="block" style={{ color: "var(--gold)" }}>with AI.</span>
           </h1>
 
-          <p className="mt-8 text-slate-400 leading-8 text-lg">
+          <p className="mt-8 text-lg leading-8" style={{ color: "var(--text-muted)" }}>
             Search jobs, build ATS-optimized resumes, prepare for interviews,
-            and receive personalized roadmaps—all in one platform.
+            and receive personalized roadmaps — all in one file.
           </p>
 
-          <div className="mt-12 space-y-4 text-slate-300">
-            <p>✓ AI Resume Builder</p>
-            <p>✓ Smart Interview Preparation</p>
-            <p>✓ Personalized Career Roadmaps</p>
-            <p>✓ Latest Job Openings</p>
+          <div className="mt-12">
+            {[
+              "AI Resume Builder",
+              "Smart Interview Preparation",
+              "Personalized Career Roadmaps",
+              "Latest Job Openings",
+            ].map((item) => (
+              <div key={item} className="checklist-item flex items-center gap-3 py-3 text-sm" style={{ color: "var(--text)" }}>
+                <span className="mono" style={{ color: "var(--teal)" }}>✓</span>
+                {item}
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
       {/* Right Section */}
-
-      <div className="flex-1 flex items-center justify-center p-6 bg-slate-100">
-        <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl border border-slate-200 p-10">
+      <div className="flex-1 flex items-center justify-center p-6">
+        <div className="file-body w-full max-w-md p-10">
           <div className="text-center">
-            <h2 className="text-4xl font-bold text-slate-900">Welcome Back</h2>
-
-            <p className="mt-3 text-slate-500">
+            <span className="mono text-xs" style={{ color: "var(--text-muted)" }}>ACCESS REQUEST</span>
+            <h2 className="display mt-3 text-4xl font-semibold" style={{ color: "var(--parchment)" }}>
+              Welcome Back
+            </h2>
+            <p className="mt-3 text-sm" style={{ color: "var(--text-muted)" }}>
               Login to continue your JobPrep AI journey.
             </p>
           </div>
 
           <form autoComplete="off" className="mt-10 space-y-6" onSubmit={handleSubmit}>
             <div>
-              <label className="text-sm font-semibold text-slate-700">
-                Email
-              </label>
-
+              <label className="mono text-xs" style={{ color: "var(--text-muted)" }}>EMAIL</label>
               <input
                 onChange={(e) => {
                   setemail(e.target.value);
                 }}
                 type="email"
                 placeholder="Enter your email"
-                className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                className="field mt-2 w-full px-4 py-3"
               />
             </div>
 
             <div>
-              <label className="text-sm font-semibold text-slate-700">
-                Password
-              </label>
-
+              <label className="mono text-xs" style={{ color: "var(--text-muted)" }}>PASSWORD</label>
               <input
                 onChange={(e) => {
                   setpassword(e.target.value);
                 }}
                 type="password"
                 placeholder="Enter your password"
-                className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                className="field mt-2 w-full px-4 py-3"
               />
             </div>
 
-            <button className="w-full rounded-xl bg-slate-900 py-3.5 font-semibold text-white transition hover:bg-slate-800">
+            <button className="btn-primary w-full rounded-xl py-3.5 text-sm uppercase">
               Login
             </button>
           </form>
 
-          <p className="mt-8 text-center text-slate-500">
+          <p className="mt-8 text-center text-sm" style={{ color: "var(--text-muted)" }}>
             Don't have an account?
             <Link to={"/register"}>
-              <span className="ml-2 cursor-pointer font-semibold text-blue-600 hover:text-blue-700">
+              <span className="ml-2 cursor-pointer font-semibold" style={{ color: "var(--gold)" }}>
                 Register
               </span>
             </Link>
